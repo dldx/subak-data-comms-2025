@@ -186,7 +186,7 @@
 									><li>Wrote reports on energy transition of various countries</li></Transition
 								>
 								<Transition
-									><li>Led the development of our Coal & Gas economic models</li></Transition
+									><li>Led the development of global coal & gas economic models</li></Transition
 								>
 								<Transition><li>Financial modelling & scenario analysis</li></Transition>
 								<Transition><li>Creating bespoke data visualisations</li></Transition>
@@ -310,7 +310,7 @@
 				</Transition>
 			{/each}
 			<!-- Add new audience input -->
-			<Transition class="bg-white/5 p-5 border-l-2" undo={() => hideCustomAudiences = true} do={() => hideCustomAudiences = false}>
+			<Transition class="bg-white/5 p-5 border-l-2 max-w-[13ch]" undo={() => hideCustomAudiences = true} do={() => hideCustomAudiences = false}>
 					<input
 						type="text"
 						bind:value={newAudienceInput}

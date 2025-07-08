@@ -193,8 +193,9 @@ h5 {
 	font-family: var(--r-heading-font);
 
 }
-html {
+html, button {
 	font-size: 20px;
+	font-family: var(--r-main-font);
 }
 /* code block background */
 div:has(> pre) {
