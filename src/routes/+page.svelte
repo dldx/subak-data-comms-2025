@@ -183,6 +183,42 @@
 						</p>
 					</Transition>
 				</div>
+
+				<Transition class="mt-12">
+					<h3 class="mb-6 font-semibold text-[var(--cti-tertiary)] text-2xl text-center">Our Research Teams</h3>
+					<div class="gap-6 grid grid-cols-5">
+						<div class="flex flex-col items-center space-y-2 text-center">
+							<div class="bg-[var(--cti-tertiary)] p-4 rounded-full text-white text-3xl">
+								⚡
+							</div>
+							<span class="font-medium text-white text-lg">Energy Supply</span>
+						</div>
+						<div class="flex flex-col items-center space-y-2 text-center">
+							<div class="bg-[var(--cti-tertiary)] p-4 rounded-full text-white text-3xl">
+								🚗
+							</div>
+							<span class="font-medium text-white text-lg">Energy Demand</span>
+						</div>
+						<div class="flex flex-col items-center space-y-2 text-center">
+							<div class="bg-[var(--cti-tertiary)] p-4 rounded-full text-white text-3xl">
+								🏛️
+							</div>
+							<span class="font-medium text-white text-lg">Policy & Transparency</span>
+						</div>
+						<div class="flex flex-col items-center space-y-2 text-center">
+							<div class="bg-[var(--cti-tertiary)] p-4 rounded-full text-white text-3xl">
+								🌿
+							</div>
+							<span class="font-medium text-white text-lg">Nature</span>
+						</div>
+						<div class="flex flex-col items-center space-y-2 text-center">
+							<div class="bg-[var(--cti-tertiary)] p-4 rounded-full text-white text-3xl">
+								💻
+							</div>
+							<span class="font-medium text-white text-lg">Data & Modelling</span>
+						</div>
+					</div>
+				</Transition>
 			</div>
 		</Transition>
 	</Slide>
