@@ -624,9 +624,9 @@
 				<div>
 					<Tabs.Root bind:value={currentTabs[currentOutput]} class="w-full">
 						<Tabs.List
-							class="grid w-full rounded-none p-0 grid-cols-{Object.keys(
+							class="grid w-full rounded-none p-0 {Object.keys(
 								outputUrls[currentOutput] || {}
-							).length}"
+							).length == 1 ? 'grid-cols-1' : 'grid-cols-2'}"
 						>
 							{#each Object.keys(outputUrls[currentOutput] || {}) as tabKey}
 								<Tabs.Trigger
