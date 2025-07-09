@@ -49,8 +49,6 @@
 	let visibility = $state('')
 	let stepNo = $state(0)
 
-
-
 	function getCurrentUrl() {
 		return outputUrls[currentOutput]?.[currentTabs[currentOutput]] || ''
 	}
@@ -185,36 +183,28 @@
 				</div>
 
 				<Transition class="mt-12">
-					<h3 class="mb-6 font-semibold text-[var(--cti-tertiary)] text-2xl text-center">Our Research Teams</h3>
+					<h3 class="mb-6 font-semibold text-[var(--cti-tertiary)] text-2xl text-center">
+						Our Research Teams
+					</h3>
 					<div class="gap-6 grid grid-cols-5">
 						<div class="flex flex-col items-center space-y-2 text-center">
-							<div class="bg-[var(--cti-tertiary)] p-4 rounded-full text-white text-3xl">
-								⚡
-							</div>
+							<div class="bg-[var(--cti-tertiary)] p-4 rounded-full text-white text-3xl">⚡</div>
 							<span class="font-medium text-white text-lg">Energy Supply</span>
 						</div>
 						<div class="flex flex-col items-center space-y-2 text-center">
-							<div class="bg-[var(--cti-tertiary)] p-4 rounded-full text-white text-3xl">
-								🚗
-							</div>
+							<div class="bg-[var(--cti-tertiary)] p-4 rounded-full text-white text-3xl">🚗</div>
 							<span class="font-medium text-white text-lg">Energy Demand</span>
 						</div>
 						<div class="flex flex-col items-center space-y-2 text-center">
-							<div class="bg-[var(--cti-tertiary)] p-4 rounded-full text-white text-3xl">
-								🏛️
-							</div>
+							<div class="bg-[var(--cti-tertiary)] p-4 rounded-full text-white text-3xl">🏛️</div>
 							<span class="font-medium text-white text-lg">Policy & Transparency</span>
 						</div>
 						<div class="flex flex-col items-center space-y-2 text-center">
-							<div class="bg-[var(--cti-tertiary)] p-4 rounded-full text-white text-3xl">
-								🌿
-							</div>
+							<div class="bg-[var(--cti-tertiary)] p-4 rounded-full text-white text-3xl">🌿</div>
 							<span class="font-medium text-white text-lg">Nature</span>
 						</div>
 						<div class="flex flex-col items-center space-y-2 text-center">
-							<div class="bg-[var(--cti-tertiary)] p-4 rounded-full text-white text-3xl">
-								💻
-							</div>
+							<div class="bg-[var(--cti-tertiary)] p-4 rounded-full text-white text-3xl">💻</div>
 							<span class="font-medium text-white text-lg">Data & Modelling</span>
 						</div>
 					</div>
@@ -324,7 +314,7 @@
 				<div class="space-y-4">
 					<h4 class="mb-4 font-semibold text-[var(--cti-tertiary)] text-2xl">📰 Journalists</h4>
 					<ul class="space-y-2 text-white text-lg xl:text-xl text-left">
-						<li>Looking for novel angles</li>
+						<li class="font-bold">Looking for novel angles</li>
 						<li>Fast turnarounds</li>
 						<li>Tie-ins with other stories</li>
 						<li>Visual content or data visualisations preferred</li>
@@ -336,7 +326,7 @@
 				<div class="space-y-4">
 					<h4 class="mb-4 font-semibold text-[var(--cti-tertiary)] text-2xl">🏛️ Policymakers</h4>
 					<ul class="space-y-2 text-white text-lg xl:text-xl text-left">
-						<li>Require actionable insights</li>
+						<li class="font-bold">Require actionable insights</li>
 						<li>Focus on policy implications</li>
 						<li>Need executive summaries</li>
 						<li>Value cost-benefit analysis</li>
@@ -352,7 +342,7 @@
 					</h4>
 					<ul class="space-y-2 text-white text-lg xl:text-xl text-left">
 						<li>Focus on financial risks</li>
-						<li>Want financial implications</li>
+						<li class="font-bold">Want financial implications</li>
 						<li>Need scenario analysis to inform decision-making</li>
 						<li>Niche data but could be very impactful</li>
 					</ul>
@@ -364,7 +354,7 @@
 					<h4 class="mb-4 font-semibold text-[var(--cti-tertiary)] text-2xl">👥 General Public</h4>
 					<ul class="space-y-2 text-white text-lg xl:text-xl text-left">
 						<li>Need clear-cut narratives</li>
-						<li>Value personal relevance</li>
+						<li class="font-bold">Value personal relevance</li>
 						<li>Respond to emotions</li>
 						<li>Engage better with visual content</li>
 					</ul>
@@ -660,9 +650,10 @@
 				<div>
 					<Tabs.Root bind:value={currentTabs[currentOutput]} class="w-full">
 						<Tabs.List
-							class="grid w-full rounded-none p-0 {Object.keys(
-								outputUrls[currentOutput] || {}
-							).length == 1 ? 'grid-cols-1' : 'grid-cols-2'}"
+							class="grid w-full rounded-none p-0 {Object.keys(outputUrls[currentOutput] || {})
+								.length == 1
+								? 'grid-cols-1'
+								: 'grid-cols-2'}"
 						>
 							{#each Object.keys(outputUrls[currentOutput] || {}) as tabKey}
 								<Tabs.Trigger
@@ -707,12 +698,8 @@
 	</Slide>
 
 	<!-- Slide 5: Measuring Impact & Next Steps -->
-	<Slide
-		class="place-content-center place-items-center cti-bg-accent h-full"
-	>
-		<div
-			class="space-y-8 max-w-6xl"
-		>
+	<Slide class="place-content-center place-items-center cti-bg-accent h-full">
+		<div class="space-y-8 max-w-6xl">
 			<div class="bg-gradient-to-r from-emerald-600 to-teal-600 p-8 rounded-xl text-white">
 				<h3 class="mb-6 font-bold text-3xl text-center">🚀 Your Action Plan</h3>
 				<div class="gap-6 grid grid-cols-3 text-center align-top">
@@ -762,6 +749,47 @@
 			</div>
 		</div>
 	</Slide>
+	<Slide class="place-content-center place-items-center h-full">
+		<Transition visible>
+			<h1 class="text-5xl">Tips for small teams</h1>
+			<div class="justify-center items-center gap-10 grid grid-cols-3 mt-10">
+				<ul class="flex flex-col justify-self-center self-center gap-2 max-w-[20vw] text-xl list-none">
+					<Transition order={1}>
+						<li class="bg-white/5 p-2">Hire a fast learner, rather than an expert</li>
+					</Transition>
+					<Transition order={3}>
+						<li class="bg-white/5 p-2">Build iteratively, focusing on small scale first</li>
+					</Transition>
+					<Transition order={5}>
+						<li class="bg-white/5 p-2">Plan ahead and consider building reusable components</li>
+					</Transition>
+					<Transition order={7}>
+						<li class="bg-white/5 p-2">Stick to a couple of core tools/programming languages so that others can pick up the work</li>
+					</Transition>
+				</ul>
+				<Transition visible>
+					<img src="./images/programmer.svg" alt="Programmer" class="w-[30vw]" />
+				</Transition>
+				<ul class="flex flex-col justify-self-center self-center gap-2 max-w-[20vw] text-xl list-none">
+					<Transition order={2}>
+						<li class="bg-white/5 p-2">Different backgrounds bring different perspectives on the data</li>
+					</Transition>
+					<Transition order={4}>
+						<li class="bg-white/5 p-2">No need for complex containerisation or orchestration</li>
+					</Transition>
+					<Transition order={6}>
+						<li class="bg-white/5 p-2">Put new charts and processing utilities into your own library so it can be reused</li>
+					</Transition>
+					<Transition order={8}>
+						<li class="bg-white/5 p-2">Python/Plotly/Dash is a great way to get started. Lots of examples available, plus LLMs understand it well</li>
+					</Transition>
+					<Transition order={9}>
+						<li class="bg-white/5 p-2">For more bespoke visualisations, use Svelte or Observable</li>
+					</Transition>
+				</ul>
+			</div>
+		</Transition>
+	</Slide>
 	<Slide
 		class="place-content-center place-items-center h-full"
 		in={() => (layout = '')}
@@ -791,8 +819,9 @@
 					class="{visibility} flex max-w-[50ch] flex-col place-content-center place-items-center text-sm xl:text-xl"
 				>
 					<Transition enter="fade-enter" class="mt-16">
-						By using a combination of LLMs and RAG (Retrieval Augmented Generation), we can begin to track the impact of our work.
-						We do this by assessing whether recommendations made in our reports are being implemented by our target audiences.
+						By using a combination of LLMs and RAG (Retrieval Augmented Generation), we can begin to
+						track the impact of our work. We do this by assessing whether recommendations made in
+						our reports are being implemented by our target audiences.
 					</Transition>
 				</div>
 				<Transition
@@ -816,19 +845,20 @@
 	</Slide>
 
 	<!-- Closing Slide -->
-	<Slide class="place-content-center place-items-center h-full"
-	out={() => {
-				layout = 'h-[70vh]'
-	}}
+	<Slide
+		class="place-content-center place-items-center h-full"
+		out={() => {
+			layout = 'h-[70vh]'
+		}}
 		in={() => {
 			layout = ''
-		}}>
+		}}
+	>
 		<Transition visible>
 			<div class="space-y-12 max-w-4xl text-center">
 				<h1 class="font-bold text-white text-6xl">Any questions?</h1>
 
 				<div class="space-y-8">
-
 					<Transition>
 						<div class="space-y-6">
 							<div class="bg-white/5 mt-6 p-6 border-[var(--cti-tertiary)] border-l-4">
@@ -837,23 +867,51 @@
 									<p>
 										<span class="font-semibold text-2xl">Durand D'souza</span>
 									</p>
-										<a
-											href="https://www.linkedin.com/in/durand1/"
-											class="flex flex-row justify-center items-center gap-2 font-semibold text-[var(--cti-tertiary)] hover:underline no-underline"
-											target="_blank"
+									<a
+										href="https://www.linkedin.com/in/durand1/"
+										class="flex flex-row justify-center items-center gap-2 font-semibold text-[var(--cti-tertiary)] hover:underline no-underline"
+										target="_blank"
+									>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											width="24"
+											height="24"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="2"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											class="lucide lucide-linkedin-icon lucide-linkedin"
+											><path
+												d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"
+											/><rect width="4" height="12" x="2" y="9" /><circle
+												cx="4"
+												cy="4"
+												r="2"
+											/></svg
 										>
-											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin-icon lucide-linkedin"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
 										durand1
-										</a>
-										<a
-											href="https://bsky.app/profile/dldx.org"
-											class="flex flex-row justify-center items-center gap-2 font-semibold text-[var(--cti-tertiary)] hover:underline no-underline"
-											target="_blank"
+									</a>
+									<a
+										href="https://bsky.app/profile/dldx.org"
+										class="flex flex-row justify-center items-center gap-2 font-semibold text-[var(--cti-tertiary)] hover:underline no-underline"
+										target="_blank"
+									>
+										<svg
+											role="img"
+											viewBox="0 0 24 24"
+											fill="currentColor"
+											stroke="none"
+											width="24"
+											height="24"
+											xmlns="http://www.w3.org/2000/svg"
+											><title>Bluesky</title><path
+												d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8Z"
+											/></svg
 										>
-											<svg role="img" viewBox="0 0 24 24" fill="currentColor" stroke="none" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><title>Bluesky</title><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8Z"/></svg>
-											dldx.org
-										</a>
-
+										dldx.org
+									</a>
 								</div>
 							</div>
 						</div>
@@ -862,5 +920,4 @@
 			</div>
 		</Transition>
 	</Slide>
-
 </Presentation>
