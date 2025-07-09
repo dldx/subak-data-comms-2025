@@ -789,7 +789,7 @@
 		}}>
 		<Transition visible>
 			<div class="space-y-12 max-w-4xl text-center">
-				<h1 class="font-bold text-white text-6xl">Any Questions?</h1>
+				<h1 class="font-bold text-white text-6xl">Any questions?</h1>
 
 				<div class="space-y-8">
 
