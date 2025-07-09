@@ -38,6 +38,7 @@
 		"@fontsource-variable/jetbrains-mono": "^5.2.6",
 		"@fontsource/atkinson-hyperlegible": "^5.2.6",
 		"@fontsource/monaspace-neon": "^5.2.5",
+		"@neodrag/svelte": "^2.3.3",
 		"@tailwindcss/vite": "^4.1.10",
 		"@vitejs/plugin-basic-ssl": "^2.1.0",
 		"reveal.js": "^5.2.1",

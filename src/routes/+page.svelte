@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { Presentation, Slide, Transition, Action, getPresentation } from '@animotion/core'
 	import { tween } from '@animotion/motion'
-	import * as Tabs from "$lib/components/ui/tabs/index.js"
-	import { Button } from "$lib/components/ui/button/index.js"
-	import ChevronRightIcon from "@lucide/svelte/icons/chevron-right"
+	import RagPipeline from '$lib/RagPipeline.svelte'
+	import * as Tabs from '$lib/components/ui/tabs/index.js'
+	import { Button } from '$lib/components/ui/button/index.js'
+	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right'
+	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left'
 
 	let audienceSegments = tween({ x: -400, opacity: 0 })
 	let dataPoints = tween({ scale: 0, opacity: 0 })
@@ -16,15 +18,15 @@
 
 	const outputUrls: Record<string, Record<string, string>> = {
 		'nature-scorecard': {
-			'nature-scorecard': 'https://planet-tracker.org/nature-scorecard/',
+			'nature-scorecard': 'https://planet-tracker.org/nature-scorecard/'
 		},
 		'data-portal': {
-			'data-portal': 'https://data.carbontracker.org',
+			'data-portal': 'https://data.carbontracker.org'
 		},
 		'country-profiles': {
-			'country-profiles': 'https://countryprofiles.carbontracker.org',
+			'country-profiles': 'https://countryprofiles.carbontracker.org'
 		},
-		'scrollytelling': {
+		scrollytelling: {
 			'women-in-parliament': 'https://pudding.cool/2018/07/women-in-parliament',
 			'japan-carbon-pricing': 'https://carbon-tracker-initiative.github.io/japan-interactive-2022/'
 		}
@@ -32,18 +34,26 @@
 	let customAudiences = $state<string[]>([])
 	let newAudienceInput = $state('')
 	let hideCustomAudiences = $state(false)
+	// Add data outputs state variables
+	let customDataOutputs = $state<string[]>([])
+	let newDataOutputInput = $state('')
+	let hideCustomDataOutputs = $state(false)
 	let presentation = getPresentation()
 	let currentTabs = $state<Record<string, string>>({
 		'nature-scorecard': 'nature-scorecard',
 		'data-portal': 'data-portal',
 		'country-profiles': 'country-profiles',
-		'scrollytelling': 'women-in-parliament'
+		scrollytelling: 'women-in-parliament'
 	})
+	let layout = $state('')
+	let visibility = $state('')
+	let stepNo = $state(0)
+
+
 
 	function getCurrentUrl() {
 		return outputUrls[currentOutput]?.[currentTabs[currentOutput]] || ''
 	}
-
 
 	async function animateAudienceSegments() {
 		await audienceSegments.to({ x: 0, opacity: 1 }, { duration: 800 })
@@ -57,10 +67,17 @@
 		await impactMetrics.to({ y: 0, opacity: 1 }, { duration: 700 })
 	}
 
-	async function cycleOutputs() {
+	async function nextOutput() {
 		currentIndex = (currentIndex + 1) % outputs.length
 		currentOutput = outputs[currentIndex]
 		await messagePersonalization.to({ x: 20, opacity: 0.8 }, { duration: 300 })
+		await messagePersonalization.to({ x: 0, opacity: 1 }, { duration: 300 })
+	}
+
+	async function prevOutput() {
+		currentIndex = (currentIndex - 1 + outputs.length) % outputs.length
+		currentOutput = outputs[currentIndex]
+		await messagePersonalization.to({ x: -20, opacity: 0.8 }, { duration: 300 })
 		await messagePersonalization.to({ x: 0, opacity: 1 }, { duration: 300 })
 	}
 
@@ -69,6 +86,26 @@
 			customAudiences.push(newAudienceInput.trim())
 			newAudienceInput = ''
 			presentation.slides.nextFragment()
+		} else if (
+			event.key === 'Backspace' &&
+			!newAudienceInput.trim() &&
+			customAudiences.length > 0
+		) {
+			customAudiences.pop()
+		}
+	}
+
+	function addDataOutput(event: KeyboardEvent) {
+		if (event.key === 'Enter' && newDataOutputInput.trim()) {
+			customDataOutputs.push(newDataOutputInput.trim())
+			newDataOutputInput = ''
+			presentation.slides.nextFragment()
+		} else if (
+			event.key === 'Backspace' &&
+			!newDataOutputInput.trim() &&
+			customDataOutputs.length > 0
+		) {
+			customDataOutputs.pop()
 		}
 	}
 </script>
@@ -243,10 +280,10 @@
 	<!-- Understanding Your Audience Segments -->
 	<Slide class="place-content-center place-items-center h-full" in={animateAudienceSegments}>
 		<Transition visible>
-			<h2 class="mb-12 text-5xl text-center">Know your target audiences</h2>
+			<h2 class="mb-8 text-5xl text-center">Know your target audiences</h2>
 		</Transition>
 
-		<div class="flex flex-wrap gap-8 max-w-5xl">
+		<div class="flex flex-wrap gap-2 max-w-5xl">
 			<Transition class="bg-white/5 p-8 border-l-2">
 				<div class="space-y-4">
 					<h4 class="mb-4 font-semibold text-[var(--cti-tertiary)] text-2xl">📰 Journalists</h4>
@@ -278,7 +315,7 @@
 						💰 Financial institutions
 					</h4>
 					<ul class="space-y-2 text-white text-lg xl:text-xl text-left">
-						<li>Focused on financial risks</li>
+						<li>Focus on financial risks</li>
 						<li>Want financial implications</li>
 						<li>Need scenario analysis to inform decision-making</li>
 						<li>Niche data but could be very impactful</li>
@@ -298,10 +335,8 @@
 				</div>
 			</Transition>
 
-
-
 			<Transition class="bg-white/5 p-8 border-l-2">
-					<h4 class="font-semibold text-[var(--cti-tertiary)] text-2xl">🌍 NGOs</h4>
+				<h4 class="font-semibold text-[var(--cti-tertiary)] text-2xl">🌍 NGOs</h4>
 			</Transition>
 			<!-- Render custom audiences -->
 			{#each customAudiences as audience}
@@ -310,16 +345,169 @@
 				</Transition>
 			{/each}
 			<!-- Add new audience input -->
-			<Transition class="bg-white/5 p-5 border-l-2 max-w-[13ch]" undo={() => hideCustomAudiences = true} do={() => hideCustomAudiences = false}>
-					<input
-						type="text"
-						bind:value={newAudienceInput}
-						onkeydown={addAudience}
-						placeholder="Insert audience..."
-						class="bg-white/10 p-2 border border-white/20 focus:border-[var(--cti-tertiary)] focus:outline-none w-full font-[var(--r-heading-font)] text-white text-3xl placeholder-white/60"
-					/>
+			<Transition
+				class="bg-white/5 p-5 border-l-2 max-w-[13ch]"
+				undo={() => (hideCustomAudiences = true)}
+				do={() => (hideCustomAudiences = false)}
+			>
+				<input
+					type="text"
+					bind:value={newAudienceInput}
+					onkeydown={addAudience}
+					placeholder="Any others?"
+					class="bg-white/10 p-2 border border-white/20 focus:border-[var(--cti-tertiary)] focus:outline-none w-full text-white text-3xl font-(family-name:--r-heading-font) placeholder-white/60"
+				/>
+			</Transition>
+		</div>
+	</Slide>
+
+	<!-- Know your data outputs -->
+	<Slide class="place-content-center place-items-center h-full">
+		<Transition visible>
+			<h2 class="mb-8 text-5xl text-center">Data outputs & mediums</h2>
+		</Transition>
+
+		<div class="flex flex-wrap gap-2 max-w-5xl">
+			<Transition class="flex-grow bg-white/5 p-8 border-l-2">
+				<div class="space-y-4">
+					<h4 class="mb-4 font-semibold text-[var(--cti-tertiary)] text-2xl">📊 Reports</h4>
+					<ul class="space-y-2 text-white text-lg xl:text-xl text-left">
+						<li>Static</li>
+						<li>Easy to make publication-ready</li>
+						<li>Shareable as PDFs</li>
+						<li>Easy to print & distribute physically</li>
+					</ul>
+				</div>
+			</Transition>
+			<Transition class="flex-grow bg-white/5 p-8 border-l-2">
+				<div class="space-y-4">
+					<h4 class="mb-4 font-semibold text-[var(--cti-tertiary)] text-2xl">🎨 Infographics</h4>
+					<ul class="space-y-2 text-white text-lg xl:text-xl text-left">
+						<li>Visual storytelling</li>
+						<li>Simplifies complex data</li>
+						<li>Social media friendly</li>
+						<li>High engagement potential</li>
+						<li>
+							<ul class="flex gap-2 pt-2 text-sm list-none">
+								<li>
+									<a
+										href="https://www.canva.com/create/infographics/"
+										class="bg-white/5 p-2 font-semibold text-[var(--cti-tertiary)] hover:underline no-underline"
+										target="_blank">Canva</a
+									>
+								</li>
+								<li>
+									<a
+										href="https://www.figma.com"
+										class="bg-white/5 p-2 font-semibold text-[var(--cti-tertiary)] hover:underline no-underline"
+										target="_blank">Figma</a
+									>
+								</li>
+								<li>
+									<a
+										href="https://inkscape.org"
+										class="bg-white/5 p-2 font-semibold text-[var(--cti-tertiary)] hover:underline no-underline"
+										target="_blank">Inkscape</a
+									>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
 			</Transition>
 
+			<Transition class="flex-grow bg-white/5 p-8 border-l-2 max-w-[20ch]">
+				<div class="space-y-4">
+					<h4 class="mb-4 font-semibold text-[var(--cti-tertiary)] text-2xl">
+						🎛️ Interactive Dashboards
+					</h4>
+					<ul class="space-y-2 text-white text-lg xl:text-xl text-left">
+						<li>Real-time data exploration</li>
+						<li>User-driven analysis = active engagement</li>
+						<li>May not be easy to make publication-ready</li>
+						<li>Different takeaways for each user (?)</li>
+						<li>
+							<ul class="flex gap-2 pt-2 text-sm list-none">
+								<li>
+									<a
+										href="https://dash.plotly.com"
+										class="bg-white/5 p-2 font-semibold text-[var(--cti-tertiary)] hover:underline no-underline"
+										target="_blank">Plotly Dash</a
+									>
+								</li>
+								<li>
+									<a
+										href="https://www.tableau.com/"
+										class="bg-white/5 p-2 font-semibold text-[var(--cti-tertiary)] hover:underline no-underline"
+										target="_blank">Tableau</a
+									>
+								</li>
+								<li>
+									<a
+										href="https://www.microsoft.com/en-us/power-platform/products/power-bi"
+										class="bg-white/5 p-2 font-semibold text-[var(--cti-tertiary)] hover:underline no-underline"
+										target="_blank">Power BI</a
+									>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</Transition>
+
+			<Transition class="flex-grow bg-white/5 p-8 border-l-2">
+				<div class="space-y-4">
+					<h4 class="mb-4 font-semibold text-[var(--cti-tertiary)] text-2xl">
+						💬 Targetted explorables
+					</h4>
+					<ul class="space-y-2 text-white text-lg xl:text-xl text-left">
+						<li>Stakeholder-focused</li>
+						<li>Actionable recommendations</li>
+						<li>Key charts & tables only</li>
+						<li>Policy implications</li>
+						<li>
+							<ul class="flex gap-2 pt-2 text-sm list-none">
+								<li>
+									<a
+										href="https://svelte.dev"
+										class="bg-white/5 p-2 font-semibold text-[var(--cti-tertiary)] hover:underline no-underline"
+										target="_blank">Svelte</a
+									>
+								</li>
+								<li>
+									<a
+										href="https://dash.plotly.com"
+										class="bg-white/5 p-2 font-semibold text-[var(--cti-tertiary)] hover:underline no-underline"
+										target="_blank">Plotly Dash</a
+									>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</Transition>
+
+			<!-- Render custom data outputs -->
+			{#each customDataOutputs as output}
+				<Transition class="bg-white/5 p-8 border-l-2" visible={!hideCustomDataOutputs}>
+					<h4 class="font-semibold text-[var(--cti-tertiary)] text-2xl">🔧 {output}</h4>
+				</Transition>
+			{/each}
+
+			<!-- Add new data output input -->
+			<Transition
+				class="bg-white/5 p-5 border-l-2 max-w-[13ch]"
+				undo={() => (hideCustomDataOutputs = true)}
+				do={() => (hideCustomDataOutputs = false)}
+			>
+				<input
+					type="text"
+					bind:value={newDataOutputInput}
+					onkeydown={addDataOutput}
+					placeholder="What's missing?"
+					class="bg-white/10 p-2 border border-white/20 focus:border-[var(--cti-tertiary)] focus:outline-none w-full text-white text-3xl font-(family-name:--r-heading-font) placeholder-white/60"
+				/>
+			</Transition>
 		</div>
 	</Slide>
 
@@ -329,107 +517,136 @@
 		in={animateDataPoints}
 	>
 		<Transition visible>
-			<h2 class="mb-12 font-bold text-5xl text-center">
-				Case studies
-			</h2>
+			<h2 class="mb-12 font-bold text-5xl text-center">Case studies</h2>
 		</Transition>
 	</Slide>
 
 	<!-- Multiple Data Outputs -->
 	<Slide class="place-content-center place-items-center cti-bg-tertiary h-full">
-
 		<div class="flex flex-row items-center gap-2 w-[90vw]">
-				<div
-					class="bg-white shadow-xl p-8 border-teal-500 border-l-4 w-[20vw] h-fit"
-					style="transform: translateX({messagePersonalization.x}px); opacity: {messagePersonalization.opacity}"
-				>
-					<div class="flex justify-between items-center mb-6">
-						<h3 class="font-semibold text-gray-800 text-xl text-left capitalize">
-							{currentOutput.replace('-', ' ')}
-						</h3>
-						<Button variant="secondary" size="icon" class="size-8" onclick={cycleOutputs}>
+			<div
+				class="bg-white shadow-xl p-8 border-teal-500 border-l-4 w-[20vw] h-fit"
+				style="transform: translateX({messagePersonalization.x}px); opacity: {messagePersonalization.opacity}"
+			>
+				<div class="flex justify-between items-center mb-6">
+					<h3 class="font-semibold text-gray-800 text-xl text-left capitalize">
+						{currentOutput.replace('-', ' ')}
+					</h3>
+					<div class="flex gap-2">
+						<Button variant="secondary" size="icon" class="size-8" onclick={prevOutput}>
+							<ChevronLeftIcon />
+						</Button>
+						<Button variant="secondary" size="icon" class="size-8" onclick={nextOutput}>
 							<ChevronRightIcon />
 						</Button>
 					</div>
+				</div>
 
-					{#if currentOutput === 'nature-scorecard'}
-							<p class="gap-x-4 grid grid-cols-[1fr_auto] text-gray-600 text-sm text-left">
-								<strong>Format</strong> Tableau dashboard
-								<strong>Audience</strong> Institutional investors, sustainability analysts
-								<strong>Dev time</strong> 🕐
-							</p>
-							<div class="bg-blue-50 mt-4 py-2 border border-blue-200 text-center">
-								<p class="font-medium text-blue-800 text-sm">
-									<img src="https://planet-tracker.org/wp-content/uploads/2023/11/pt-fav.png" alt="Planet Tracker Logo" class="inline-block w-4 h-4" />
-									<a href="https://planet-tracker.org/nature-scorecard/" class="underline" target="_blank"
-										>planet-tracker.org/nature-scorecard</a
-									>
-								</p>
-						</div>
-					{:else if currentOutput === 'country-profiles'}
-							<p class="gap-x-4 grid grid-cols-[1fr_auto] text-gray-600 text-sm text-left">
-								<strong>Format:</strong> Country-specific policy dashboards
-								<strong>Audience:</strong> Policymakers, diplomats, government analysts
-								<strong>Dev time</strong> 🕐🕐
-							</p>
-							<div class="bg-blue-50 mt-4 py-2 border border-blue-200 text-center">
-								<p class="font-medium text-green-800 text-sm">
-									<img src="https://carbontracker.org/wp-content/uploads/2017/09/cropped-Carbon_Tracker_PRI_Favicon_v1.0-180x180.png" alt="Carbon Tracker Logo" class="inline-block w-4 h-4" />
-									<a href="https://countryprofiles.carbontracker.org" class="underline" target="_blank"
-										>countryprofiles.carbontracker.org</a
-									>
-								</p>
-						</div>
-					{:else if currentOutput === 'scrollytelling'}
-							<p class="gap-x-4 grid grid-cols-[1fr_auto] text-gray-600 text-sm text-left">
-								<strong>Format</strong> Narrative-driven data storytelling
-								<strong>Audience</strong> General public, NGOs, policymakers (?)
-								<strong>Dev time</strong> 🕐🕐 - 🕐🕐🕐🕐🕐
-							</p>
-							<div class="bg-blue-50 mt-4 py-2 border border-blue-200 text-center">
-								<p class="font-medium text-green-800 text-sm">
-									<img src="https://pudding.cool/favicon.ico" alt="Pudding Logo" class="inline-block w-4 h-4" />
-									<a href="https://pudding.cool/2018/07/women-in-parliament" class="underline" target="_blank"
-										>pudding.cool/2018/07/women-in-parliament</a
-									>
-								</p>
-							</div>
-					{:else if currentOutput === 'data-portal'}
-							<p class="gap-x-4 grid grid-cols-[1fr_auto] text-gray-600 text-sm text-left">
-								<strong>Format</strong> Interactive data exploration platform
-								<strong>Audience</strong> Data analysts, researchers, journalists, NGOs
-								<strong>Dev time</strong> 🕐🕐🕐🕐
-							</p>
-							<div class="bg-blue-50 mt-4 p-0 py-2 border border-blue-200 text-center">
-								<p class="font-medium text-blue-800 text-sm">
-									<img src="https://carbontracker.org/wp-content/uploads/2017/09/cropped-Carbon_Tracker_PRI_Favicon_v1.0-180x180.png" alt="Carbon Tracker Logo" class="inline-block w-4 h-4" />
-									<a href="https://data.carbontracker.org" class="underline" target="_blank"
-										>data.carbontracker.org</a
-									>
-								</p>
-							</div>
-					{/if}
-				</div>
-				<div class="flex flex-col flex-grow bg-muted shadow-xl p-0 h-[90vh]">
-					<div>
-						<Tabs.Root bind:value={currentTabs[currentOutput]} class="w-full">
-							<Tabs.List class="p-0 grid w-full rounded-none grid-cols-{Object.keys(outputUrls[currentOutput] || {}).length}">
-								{#each Object.keys(outputUrls[currentOutput] || {}) as tabKey}
-									<Tabs.Trigger value={tabKey} class="bg-[var(--r-background-color)] dark:data-[state=active]:bg-[var(--cti-primary)] rounded-none capitalize">
-										{tabKey.replaceAll('-', ' ')}
-									</Tabs.Trigger>
-								{/each}
-							</Tabs.List>
-						</Tabs.Root>
+				{#if currentOutput === 'nature-scorecard'}
+					<p class="gap-x-4 grid grid-cols-[1fr_auto] text-gray-600 text-sm text-left">
+						<strong>Format</strong> Tableau dashboard
+						<strong>Audience</strong> Institutional investors, sustainability analysts
+						<strong>Dev time</strong> 🕐
+					</p>
+					<div class="bg-blue-50 mt-4 py-2 border border-blue-200 text-center">
+						<p class="font-medium text-blue-800 text-sm">
+							<img
+								src="https://planet-tracker.org/wp-content/uploads/2023/11/pt-fav.png"
+								alt="Planet Tracker Logo"
+								class="inline-block w-4 h-4"
+							/>
+							<a
+								href="https://planet-tracker.org/nature-scorecard/"
+								class="underline"
+								target="_blank">planet-tracker.org/nature-scorecard</a
+							>
+						</p>
 					</div>
-					<iframe
-						class="flex-grow border-none w-full"
-						src={getCurrentUrl()}
-						title="{currentOutput} preview"
-						height="100%"
-						width="100%"
-					></iframe>
+				{:else if currentOutput === 'country-profiles'}
+					<p class="gap-x-4 grid grid-cols-[1fr_auto] text-gray-600 text-sm text-left">
+						<strong>Format:</strong> Country-specific policy dashboards
+						<strong>Audience:</strong> Policymakers, diplomats, government analysts
+						<strong>Dev time</strong> 🕐🕐
+					</p>
+					<div class="bg-blue-50 mt-4 py-2 border border-blue-200 text-center">
+						<p class="font-medium text-green-800 text-sm">
+							<img
+								src="https://carbontracker.org/wp-content/uploads/2017/09/cropped-Carbon_Tracker_PRI_Favicon_v1.0-180x180.png"
+								alt="Carbon Tracker Logo"
+								class="inline-block w-4 h-4"
+							/>
+							<a href="https://countryprofiles.carbontracker.org" class="underline" target="_blank"
+								>countryprofiles.carbontracker.org</a
+							>
+						</p>
+					</div>
+				{:else if currentOutput === 'scrollytelling'}
+					<p class="gap-x-4 grid grid-cols-[1fr_auto] text-gray-600 text-sm text-left">
+						<strong>Format</strong> Narrative-driven data storytelling
+						<strong>Audience</strong> General public, NGOs, policymakers (?)
+						<strong>Dev time</strong> 🕐🕐 - 🕐🕐🕐🕐🕐
+					</p>
+					<div class="bg-blue-50 mt-4 py-2 border border-blue-200 text-center">
+						<p class="font-medium text-green-800 text-sm">
+							<img
+								src="https://pudding.cool/favicon.ico"
+								alt="Pudding Logo"
+								class="inline-block w-4 h-4"
+							/>
+							<a
+								href="https://pudding.cool/2018/07/women-in-parliament"
+								class="underline"
+								target="_blank">pudding.cool/2018/07/women-in-parliament</a
+							>
+						</p>
+					</div>
+				{:else if currentOutput === 'data-portal'}
+					<p class="gap-x-4 grid grid-cols-[1fr_auto] text-gray-600 text-sm text-left">
+						<strong>Format</strong> Interactive data exploration platform
+						<strong>Audience</strong> Data analysts, researchers, journalists, NGOs
+						<strong>Dev time</strong> 🕐🕐🕐🕐
+					</p>
+					<div class="bg-blue-50 mt-4 p-0 py-2 border border-blue-200 text-center">
+						<p class="font-medium text-blue-800 text-sm">
+							<img
+								src="https://carbontracker.org/wp-content/uploads/2017/09/cropped-Carbon_Tracker_PRI_Favicon_v1.0-180x180.png"
+								alt="Carbon Tracker Logo"
+								class="inline-block w-4 h-4"
+							/>
+							<a href="https://data.carbontracker.org" class="underline" target="_blank"
+								>data.carbontracker.org</a
+							>
+						</p>
+					</div>
+				{/if}
+			</div>
+			<div class="flex flex-col flex-grow bg-muted shadow-xl p-0 h-[90vh]">
+				<div>
+					<Tabs.Root bind:value={currentTabs[currentOutput]} class="w-full">
+						<Tabs.List
+							class="grid w-full rounded-none p-0 grid-cols-{Object.keys(
+								outputUrls[currentOutput] || {}
+							).length}"
+						>
+							{#each Object.keys(outputUrls[currentOutput] || {}) as tabKey}
+								<Tabs.Trigger
+									value={tabKey}
+									class="bg-[var(--r-background-color)] dark:data-[state=active]:bg-[var(--cti-primary)] rounded-none capitalize"
+								>
+									{tabKey.replaceAll('-', ' ')}
+								</Tabs.Trigger>
+							{/each}
+						</Tabs.List>
+					</Tabs.Root>
 				</div>
+				<iframe
+					class="flex-grow border-none w-full"
+					src={getCurrentUrl()}
+					title="{currentOutput} preview"
+					height="100%"
+					width="100%"
+				></iframe>
+			</div>
 		</div>
 
 		<!-- Add Action components for navigation -->
@@ -443,7 +660,7 @@
 		<Transition visible>
 			<div class="w-[98vw] h-[97vh]">
 				<iframe
-					src="https://link.excalidraw.com/l/6slCDyz3sXF/42irFElx8nP"
+					src="https://link.excalidraw.com/l/6slCDyz3sXF/8OLVxQm5nGQ"
 					title="Audience Mapping"
 					width="100%"
 					height="100%"
@@ -456,88 +673,110 @@
 	<!-- Slide 5: Measuring Impact & Next Steps -->
 	<Slide
 		class="place-content-center place-items-center cti-bg-accent h-full"
-		in={animateImpactMetrics}
 	>
-		<Transition visible>
-			<h2 class="mb-12 font-bold text-emerald-800 text-5xl text-center">
-				📈 Measuring Communication Impact
-			</h2>
-		</Transition>
-
 		<div
 			class="space-y-8 max-w-6xl"
-			style="transform: translateY({impactMetrics.y}px); opacity: {impactMetrics.opacity}"
 		>
-			<div class="gap-8 grid grid-cols-2">
-				<Transition class="bg-white shadow-lg p-8 border-emerald-500 border-l-4 rounded-xl">
-					<h3 class="mb-6 font-semibold text-emerald-800 text-2xl">📊 Quantitative Metrics</h3>
-					<div class="space-y-3">
-						<div class="flex justify-between items-center bg-emerald-50 p-3 rounded-lg">
-							<span class="text-emerald-700">Engagement Rate</span>
-							<span class="font-bold text-emerald-800">↗️ Track clicks, shares, time on page</span>
-						</div>
-						<div class="flex justify-between items-center bg-emerald-50 p-3 rounded-lg">
-							<span class="text-emerald-700">Reach & Distribution</span>
-							<span class="font-bold text-emerald-800">📢 Monitor audience size growth</span>
-						</div>
-						<div class="flex justify-between items-center bg-emerald-50 p-3 rounded-lg">
-							<span class="text-emerald-700">Content Performance</span>
-							<span class="font-bold text-emerald-800">🎯 A/B test different approaches</span>
-						</div>
-					</div>
-				</Transition>
-
-				<Transition class="bg-white shadow-lg p-8 border-blue-500 border-l-4 rounded-xl">
-					<h3 class="mb-6 font-semibold text-blue-800 text-2xl">💬 Qualitative Feedback</h3>
-					<div class="space-y-3">
-						<div class="flex justify-between items-center bg-blue-50 p-3 rounded-lg">
-							<span class="text-blue-700">Audience Surveys</span>
-							<span class="font-bold text-blue-800">📝 Direct feedback collection</span>
-						</div>
-						<div class="flex justify-between items-center bg-blue-50 p-3 rounded-lg">
-							<span class="text-blue-700">Stakeholder Interviews</span>
-							<span class="font-bold text-blue-800">🗣️ Deep-dive conversations</span>
-						</div>
-						<div class="flex justify-between items-center bg-blue-50 p-3 rounded-lg">
-							<span class="text-blue-700">Comment Analysis</span>
-							<span class="font-bold text-blue-800">💭 Social listening & sentiment</span>
-						</div>
-					</div>
-				</Transition>
-			</div>
-
-			<Transition class="bg-gradient-to-r from-emerald-600 to-teal-600 p-8 rounded-xl text-white">
+			<div class="bg-gradient-to-r from-emerald-600 to-teal-600 p-8 rounded-xl text-white">
 				<h3 class="mb-6 font-bold text-3xl text-center">🚀 Your Action Plan</h3>
-				<div class="gap-6 grid grid-cols-3 text-center">
-					<div class="space-y-2">
-						<div class="text-4xl">1️⃣</div>
-						<h4 class="font-semibold text-lg">Map Your Audiences</h4>
-						<p class="text-emerald-100">Identify & segment your key stakeholders</p>
-					</div>
-					<div class="space-y-2">
-						<div class="text-4xl">2️⃣</div>
-						<h4 class="font-semibold text-lg">Tailor Your Content</h4>
-						<p class="text-emerald-100">Adapt complexity & messaging per audience</p>
-					</div>
-					<div class="space-y-2">
-						<div class="text-4xl">3️⃣</div>
-						<h4 class="font-semibold text-lg">Measure & Iterate</h4>
-						<p class="text-emerald-100">Track impact & continuously improve</p>
-					</div>
+				<div class="gap-6 grid grid-cols-3 text-center align-top">
+					<Transition class="col-span-3 text-center" order={4}>
+						<div class="bg-white shadow-lg mx-auto p-2 border-2 rounded-sm w-full">
+							<span
+								class="inline-flex justify-center items-center bg-[var(--cti-tertiary)] mr-3 rounded w-8 h-8 font-bold text-white text-2xl"
+								>0</span
+							>
+							<span class="font-semibold text-gray-700 text-xl"
+								>Plan ahead. Prioritise reusable components.</span
+							>
+						</div>
+					</Transition>
+					<Transition order={1}>
+						<div class="space-y-2 min-h-[5ch]">
+							<div
+								class="inline-flex justify-center items-center bg-[var(--cti-tertiary)] rounded w-8 h-8 font-bold text-white text-2xl"
+							>
+								1
+							</div>
+							<h4 class="font-semibold text-lg">Map Your Audiences</h4>
+							<p class="text-emerald-100 text-sm">Identify & segment your key stakeholders</p>
+						</div></Transition
+					><Transition order={2}>
+						<div class="space-y-2">
+							<div
+								class="inline-flex justify-center items-center bg-[var(--cti-tertiary)] rounded w-8 h-8 font-bold text-white text-2xl"
+							>
+								2
+							</div>
+							<h4 class="font-semibold text-lg">Tailor Your Content</h4>
+							<p class="text-emerald-100 text-sm">Choose a medium. Adapt complexity & messaging.</p>
+						</div></Transition
+					><Transition order={3}>
+						<div class="space-y-2">
+							<div
+								class="inline-flex justify-center items-center bg-[var(--cti-tertiary)] rounded w-8 h-8 font-bold text-white text-2xl"
+							>
+								3
+							</div>
+							<h4 class="font-semibold text-lg">Measure & Iterate</h4>
+							<p class="text-emerald-100 text-sm">Track impact & build on what works.</p>
+						</div></Transition
+					>
 				</div>
-			</Transition>
-
-			<Transition class="text-center">
-				<div class="bg-white shadow-lg p-6 border-2 border-emerald-200 rounded-xl">
-					<p class="mb-4 text-gray-700 text-xl">
-						<strong>Remember:</strong> Effective data communication bridges the gap between insight and
-						action
-					</p>
-					<p class="text-emerald-600 text-lg">
-						Questions? Let's discuss how to implement these strategies for your organization.
-					</p>
-				</div>
-			</Transition>
+			</div>
 		</div>
 	</Slide>
+	<Slide
+		class="place-content-center place-items-center h-full"
+		in={() => (layout = '')}
+		out={() => {
+			layout = ''
+		}}
+	>
+		<Transition visible>
+			<h1 class="static !text-yellow-300 text-5xl">Automated impact tracking</h1>
+		</Transition>
+		<Transition
+			enter="enter"
+			class="hidden"
+			order={1}
+			do={() => {
+				layout = 'h-[70vh]'
+				visibility = ''
+				stepNo = 1
+			}}
+			undo={() => {
+				layout = ''
+				visibility = ''
+			}}
+		>
+			<div class="{layout} m-16 flex flex-col place-content-center place-items-center">
+				<div
+					class="{visibility} flex max-w-[50ch] flex-col place-content-center place-items-center text-sm xl:text-xl"
+				>
+					<Transition enter="fade-enter" class="mt-16">
+						By using a combination of LLMs and RAG (Retrieval Augmented Generation), we can begin to track the impact of our work.
+						We do this by assessing whether recommendations made in our reports are being implemented by our target audiences.
+					</Transition>
+				</div>
+				<Transition
+					enter="fade-enter"
+					class="w-[80vw] xl:w-[85vw] h-[80vh] xl:h-[85vh]"
+					do={() => {
+						visibility = 'hidden'
+						stepNo = 0
+						layout = 'h-[70vh]'
+					}}
+					undo={() => {
+						visibility = ''
+						stepNo = 0
+						layout = 'h-[70vh]'
+					}}
+				>
+					<RagPipeline {stepNo} />
+				</Transition>
+			</div>
+		</Transition>
+	</Slide>
+
 </Presentation>

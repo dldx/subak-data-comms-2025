@@ -23,6 +23,9 @@ importers:
       '@fontsource/monaspace-neon':
         specifier: ^5.2.5
         version: 5.2.5
+      '@neodrag/svelte':
+        specifier: ^2.3.3
+        version: 2.3.3(svelte@5.35.4)
       '@tailwindcss/vite':
         specifier: ^4.1.10
         version: 4.1.11(vite@6.3.5(jiti@2.4.2)(lightningcss@1.30.1))
@@ -311,6 +314,11 @@ packages:
     resolution: {integrity: sha512-dyUxkXzepagLUzL8jHQNdeH286nC66ClLACsg+Neu/bjkRJWPWMzkT+H0DKlE70QdkicGCfs1ZGmXCc351hmZA==}
     peerDependencies:
       svelte: ^5
+
+  '@neodrag/svelte@2.3.3':
+    resolution: {integrity: sha512-avXzhrilsBsnMFljhVAQ7h+6hbSIrvRCJ61GCiGbGISkC1QOhjDCNvPZo2+7KVwiYrnUBx4NRH0kTIqrcxv9Lg==}
+    peerDependencies:
+      svelte: ^3.0.0 || ^4.0.0 || ^5.0.0
 
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
@@ -1449,6 +1457,10 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.4
 
   '@lucide/svelte@0.525.0(svelte@5.35.4)':
+    dependencies:
+      svelte: 5.35.4
+
+  '@neodrag/svelte@2.3.3(svelte@5.35.4)':
     dependencies:
       svelte: 5.35.4
 
